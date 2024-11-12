@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: #fff;
+            text-align: center;
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-1cm); /* 向上移动内容 */
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .card {
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .date {
+            font-size: 2em;
+            margin: 0;
+        }
+        .day {
+            font-size: 1.5em;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3em;
+            margin-top: 0;
+        }
+        p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .links a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 显示当前日期和星期
+            const dateElement = document.getElementById("date");
+            const dayElement = document.getElementById("day");
+            const now = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dayOptions = { weekday: 'long' };
+            dateElement.textContent = now.toLocaleDateString('zh-CN', dateOptions);
+            dayElement.textContent = now.toLocaleDateString('zh-CN', dayOptions);
+        });
+    </script>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="card">
+            <div class="date-weather">
+                <div id="date" class="date"></div>
+                <div id="day" class="day"></div>
+            </div>
+        </div>
+        <div class="container">
+            <h1>欢迎!</h1>
+            <p>这是您的默认欢迎页面。</p>
+            <div class="links">
+                <a href="https://www.google.com" target="_blank">Google</a>
+                <a href="https://www.youtube.com" target="_blank">YouTube</a>
+                <a href="https://github.com/jzq129" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

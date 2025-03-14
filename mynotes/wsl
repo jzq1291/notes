@@ -50,5 +50,3 @@
 
 7. 备份配置好的Ubuntu, 下次import使用
    wsl --export newUbuntu D:\wslInstance\Ubuntu.tar
-
-8. 

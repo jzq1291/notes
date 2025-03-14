@@ -1,0 +1,54 @@
+## Install ubuntu
+1. 安装终端 Windows Terminal
+2. wsl --install
+   默认安装Ubuntu发行版, wsl --list --online 查看所有可用的发行版
+   wsl --install <Distribution Name> 安装指定发行版
+3. 转移Ubuntu实例到D盘
+   wsl -l -v 
+   wsl --export Ubuntu D:\wsl\Ubuntu.tar  导出
+   wsl --unregister Ubuntu  注销当前实例
+   wsl --import newUbuntu D:\wslInstance\Ubuntu D:\wsl\Ubuntu.tar --version 2
+4. 设置Ubuntu默认登录用户
+   建用户
+   sudo adduser zhiqiang
+   password:123
+   把zhiqinag添加到sudo用户组
+   usermod -aG sudo zhiqiang  
+   设置默认用户
+   sudo nano /etc/wsl.conf 
+   default=zhiqiang
+   重启
+   wsl -t newUbuntu
+   wsl -d newUbuntu
+   检查
+   whoami
+5. 设置进入Ubuntu时的目录，默认是/mnt/..
+   cd ~
+   vi .bashrc
+   添加
+   if [[ "$PWD" == "/mnt/"* ]]; then
+      cd ~
+   fi
+   source .bashrc
+6. 安装ZSH
+   sudo apt update && sudo apt install zsh
+   设置zsh为默认shell
+   chsh -s $(which zsh)
+   查看当前shell
+   echo $SHELL
+   安装oh-my-zsh
+   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+   安装插件
+   git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+   note:${ZSH_CUSTOM:-~/.oh-my-zsh/custom} 先取变量$ZSH_CUSTOM,如果没有则使用默认值
+   vi .zshrc
+   plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+   source .zshrc
+
+   ....
+
+7. 备份配置好的Ubuntu, 下次import使用
+   wsl --export newUbuntu D:\wslInstance\Ubuntu.tar
+
+8. 

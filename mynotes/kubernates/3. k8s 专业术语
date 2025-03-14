@@ -1,0 +1,55 @@
+1. 无状态 && 有状态
+ 1.1 无状态应用: 不会对本地环境产生依赖，Nginx
+ 1.2 有状态应用: 依赖本地环境，Redis，mysql
+
+2. 资源的分类
+ 2.1 元数据级
+  2.1.1 HPA: 根据流量对Pod自动扩容缩容
+  2.1.2 Pod template: spec.template
+  2.1.3 Limit Range: 限制Pod的资源使用
+ 2.2 集群级
+  2.2.1 namespace
+  2.2.2 node
+  2.2.3 ClusterRole 权限组
+  2.2.4 ClusterRoleBinding 绑定权限组到集群资源
+ 2.3 命名空间级（重点）
+    2.3.1 工作负载型
+      A. Deployment - 适用无状态服务
+         a1. 创建Pod
+         a2. 扩容缩容
+         a3. 滚动升级(回滚)
+         a4. 暂停与恢复deployment
+      B. StatefulSet - 适用有状态服务
+         a1. 特点：稳定的持久化存储，稳定的网络
+         a2. 组成：headless service，volumClaimTemplate 来实现a1
+      C. DaemonSet - 守护进程
+         c1. 日志收集，每个node都有，例如logstash
+         c2. 系统监控，Prometheus(普罗米修斯)
+         c3. 系统程序，kube-proxy， kube-dns
+      D. Job/CornJob - 任务/定时任务
+         d1. 运行完销毁，不会重新启动新容器
+    
+    2.3.2 服务发现
+       A. Service
+         a1. 集群内部网络通信，node和node， Pod和Pod，微服务和微服务，东西流量
+         a2. 分类：
+             ClusterIP(默认类型),只能集群内部访问
+             NodePort：开放一个静态端口，适用集群外部访问
+             Loadbalancer: 在AWS上创建外部负载均衡器，将流量分发到service
+             ExternalName：将service映射到一个外部域名，适用与集群内部服务与外部集成
+         a3. 通信协议：TCP,UDP
+       B. Ingress 
+         b1. 用户->F5->网关->微服务，将内部服务暴露给外网访问，南北流量
+         b2. 方向代理，负载均衡
+         b3. 复杂路由:基于主机名和URL将流量分发到不同服务
+         b4. 通信协议：http，https
+       C. Service负载均衡和Ingress负载均衡
+         c1. service负载均衡，针对集群内部流量，分发到不同Pod，不涉及复杂的路由规则
+         c2. ingress负载均衡，针对外部http/https流量，根据URL分发到不同service
+    2.3.3 存储
+       A. VOLUME:共享Pod中容器使用的数据，有状态服务使用
+       B. CSI 
+    2.3.4 特殊内省配置
+       A. ConfigMap: key-value，灵活的配置文件
+       B. Secret: 加密配置
+       C. DownwardAPI: 将Pod的信息暴露到容器中

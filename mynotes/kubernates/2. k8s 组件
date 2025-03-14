@@ -1,0 +1,17 @@
+Master节点
+1. api-server：k8s的rest接口服务
+2. kube-controller-manager
+3. cloud-controller-manager
+4. kube-scheduler: 将pod分配到合适的node
+5. etcd: K8s的数据库
+Node节点
+6. kubelet: 与master节点通信，负责Pod的生命周期
+7. kube-proxy: 负责网络代理，服务发现，负载均衡
+8. container-runtime: Docker
+9. Pod
+附加组件
+10. kube-dns
+11. ingress Controller: 外部访问
+12. Prometheus: 普罗米修斯，监控master和node资源使用情况(CPU，memory，disk)，以及Pod，Service运行状态
+13. Dashboard: web ui 可视化查看集群状态、创建和管理资源.
+14. Federation

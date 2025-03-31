@@ -1,0 +1,31 @@
+1. 通过命令直接创建deployment
+   kubectl create deployment tomcat --image=zhiqiang/mytomcat:1.3
+2. 通过yaml文件创建
+   kubectl apply -f redis-create.yaml
+
+3. 滚动更新
+   修改了redis的版本号
+​   创建新 ReplicaSet
+   ​逐步替换 Pod
+
+4. 版本回滚
+   # 修改image的版本号
+   kubectl set image deployment/redis redis=redis:7.0
+   # 查看滚动更新状态
+   kubectl rollout status deployment/redis
+   # 版本更新错误，回滚到上一个版本
+   kubectl rollout undo deployment/redis
+   # 查看并回退到指定历史版本
+   kubectl rollout history deployment/redis
+   kubectl rollout undo deployment/redis --to-revision=1
+
+5. 扩容缩容
+   kubectl scale --replicas=5 deployment redis
+   
+6. 暂停与恢复，防止频繁修改时一直更新
+   # 暂停
+   kubectl rollout pause deployment redis 
+   # 修改 
+   ....
+   # 恢复
+   kubectl rollout resume deployment redis

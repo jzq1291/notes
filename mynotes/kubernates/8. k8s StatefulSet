@@ -1,0 +1,49 @@
+1. 直接创建StatefulSet（不推荐）
+kubectl create statefulset redis --image=redis:latest --service=redis --replicas=3
+在 Kubernetes v1.18+ 版本中，不支持命令创建statefulset,只能 appl yaml.
+
+2. 无头Service
+  2.1  不分配ClusterIp，而是为每个Pod创建独立的DNS记录
+  2.2. StatefulSet 的每个Pod有固定的名称 如 redis-0、redis-1),无头Service会为这些Pod绑定固定的DNS记录和IP
+       ​即使 Pod 重启或重新调度，DNS 名称依然不变
+  2.3 客户端（或其他Pod）可以直接选择某个Pod通信
+
+3. 通过yaml文件创建StatefulSet，自动创建redis Pod
+   kubectl apply -f redis-statefulset.yaml
+   kubectl get pods -l app=redis -w 
+   创建service，暴露redis到外部
+   kubectl apply -f redis-nodeport.yaml
+   kubectl get pods,sts,service
+   宿主机访问redis，会随机访问一个pod, 如果需要访问特定pod,需要配置多个Service
+   redis-cli -h localhost -p 30001
+   进入容器访问redis
+   kubectl -it redis-0 --redis-cli 
+
+
+4. StatefulSet扩容和缩容
+   kubectl scale statefulset redis --replicas=4
+   kubectl patch statefulset redis -p '{"spec":{"replicas":4}}'
+
+5. 镜像更新
+   5.1 statefulset 不能通过 Kubectl set image 直接修改
+   5.2 kubectl edit sts redis 修改image
+   5.2 kubectl patch sts redis -p 更新image   
+
+6. 灰度发布（金丝雀发布）
+   6.1 先更新一小部分（部分pod），确认没问题后再更新所有，把项目上线出问题的影响降到最低
+   6.2 参数，更新redis-3之后的
+   updateStrategy:
+      rollingUpdate:
+        partition: 3
+
+7. Ondelete 更新策略
+   7.1 前面都是rollingUpdate，修改sts之后保存就会更新Pod,
+   7.2 如果更新策略改成Ondelete, 只有Pod删除重建之后才会更新
+
+8. 级联删除
+   8.1 默认删除sts的时候级联删除相关Pod
+   8.2 可以设置不级联删除
+       kubectl delete sts redis --cascade=false
+   
+
+

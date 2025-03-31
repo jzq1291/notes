@@ -1,0 +1,94 @@
+1. 安装Docker
+  1.1 安装Docker依赖
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+  1.2 添加Docker官方GPG密钥
+   curl -fsSL https://mirrors.aliyun.com/docker-ce/linux/ubuntu/gpg | 
+   sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  1.3 添加Docker稳定版仓库
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
+   https://mirrors.aliyun.com/docker-ce/linux/ubuntu $(lsb_release -cs) stable" | 
+   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  1.4 安装Docker
+   sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+  1.5 当前用户添加到docekr用户组
+   sudo usermod -aG docker $USER
+  1.6 检查Docker
+   docker --version
+   docker run hello-world
+
+2. 安装kind
+  2.1 下载
+   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+  2.2 赋权
+   chmod +x ./kind
+  2.3 将kind移到bin目录
+   sudo mv ./kind /usr/local/bin/kind
+  2.4 检查kind
+   kind --version
+
+3. 安装Kubectl
+  3.1 下载
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  3.2 
+  chmod +x ./kubectl
+  sudo mv ./kubectl /usr/local/bin/kubectl
+
+3. 创建单节点Cluster
+  3.1 创建配置文件kind-config.yaml
+    kind: Cluster
+    apiVersion: kind.x-k8s.io/v1alpha4
+    nodes:
+      - role: control-plane
+        image: kindest/node:v1.27.16  # 指定 Kubernetes 版本
+        extraPortMappings:
+          - containerPort: 80        # Kubernetes 服务的端口
+            hostPort: 8080          # 映射到宿主机的端口
+            protocol: TCP
+          - containerPort: 443
+            hostPort: 8443
+            protocol: TCP
+          - containerPort: 30000
+            hostPort: 30000
+            protocol: TCP
+  3.2 使用config.yaml创建cluster
+  kind create cluster --name my-cluster --config kind-config.yaml
+  3.3 无法访问外网拉取iamge时的workaround
+    3.3.1 在一台可以访问外网的机器上，导出 kindest/node 镜像：
+      docker pull kindest/node:v1.27.16
+      docker save kindest/node:v1.27.16 -o kindest-node-v1.27.16.tar
+    3.3.2 将导出的镜像文件（kindest-node-v1.27.16.tar）传输到目标机器。
+    3.3.2 在目标机器上加载镜像
+    docker load -i kindest-node-v1.27.16.tar
+    3.3.4 使用本地镜像来创建Cluster
+    kind create cluster --name my-cluster --config kind-config.yaml
+
+4. 验证Cluster
+   kind get clusters
+   kubectl clusetr-info
+   kubectl get nodes
+   kubectl get pods -A
+   
+5. Demo：通过deployment控制器创建一个tomcat的pod，并通过service把端口暴露给宿主机访问
+   5.1 加载本地镜像到kind 集群
+    kind load docker-image zhiqiang/mytomcat:1.3 --name my-cluster
+   5.2 创建Deployment，或需要修改deployment的imagePullPolicy参数为Never
+    kubectl create deployment tomcat --image=zhiqiang/mytomcat:1.3
+    kubectl get deployment
+    5.3 自动创建pod
+    kubectl get pods -A 
+    5.4 暴露tomcat 为nodeport类型的service，patchl来修改nodePort,或者用yaml方式来创建service
+    kubectl expose deployment tomcat --port=8080 --type=NodePort
+    kubectl patch svc tomcat -p '{"spec":{"ports":[{"port":8080,"nodePort":30000}]}}'
+
+    kubectl get service
+    kubectl edit service tomcat
+    5.5 通过宿主机访问tomcat
+    localhost:30000
+
+6. note:
+   重建service
+   kubectl delete service tomcat
+   kubectl expose deployment tomcat --port=8080 --type=NodePort
+   重建Cluster
+   kind delete cluster --name <cluster-name>
+   kind create cluster --name <cluster-name> --config kind-config.yaml

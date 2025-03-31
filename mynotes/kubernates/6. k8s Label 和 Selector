@@ -1,0 +1,9 @@
+kubectl get pod --show-labels
+kubectl get pods -A -l app=tomcat
+1. -l 是kubectl命令的选择器参数，用于按标签过滤资源
+
+2. K8s中 ReplicaSet（RS）控制器的作用
+    它是 ​Deployment 的底层实现组件，主要负责 Pod 的扩缩容和自愈
+    ​维持 Pod 副本数
+    自愈能力：如果某个 Pod 崩溃或被删除，ReplicaSet 会自动创建新的 Pod 替代
+    扩缩容：通过修改 replicas 字段，可以动态调整 Pod 数量

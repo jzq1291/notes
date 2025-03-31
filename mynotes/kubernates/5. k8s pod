@@ -1,0 +1,47 @@
+kubectl get pod
+kubectl delete pod
+kubectl describle pod
+kubectl edit pod
+kubectl get pod --show-labels
+kubectl get pods -A -l app=tomcat
+-l 是kubectl命令的选择器参数，用于按标签过滤资源
+
+1. 通过yaml直接创建Pod
+   kubectl create -f xx-pod.yaml
+   kubectl apply -f xx-pod.yaml
+2. 通过deployment等控制器创建Pod
+3. Pod 的各种参数
+   name
+   image
+   imagePullPolicy
+   namespace
+
+4. Pod探针：
+   4.1 startupProbe， 探测容器是否已经启动完成，启动探针成功后其他探针才会开始工作
+   4.2 livenessProbe，探测容器中的应用是否运行，再根据配置的重启策略进行重启
+   4.3 readinessProbe， 检测容器是否已准备好接收流量，就绪探针不会重启容器，仅控制流量
+   4.4 探针的方式，http，tcp，exec，看请求/命令是否能成功
+   4.5 探针对比
+   探针类型	   失败后果	      典型用途
+   ​启动探针	 延迟其他探针	 保护慢启动应用
+   ​存活探针	 重启容器	    处理应用崩溃或无响应
+   ​就绪探针	 停止流量路由	 避免向未就绪的 Pod 发送请求
+
+5. Pod生命周期
+   Pod包含Pending，Running，Successed，Failed，由调度，容器状态，探针共同决定
+   5.1 创建流程：
+      提交定义：kubectl apply 
+      调度：选择合适的node，绑定Pod到目标Node
+      启动容器：拉取镜像并启动容器
+      探针生效
+   5.2 运行中状态变化
+      ​容器崩溃或存活探针失败 → kubelet 根据 restartPolicy 决定是否重启容器。
+      ​就绪探针失败 → Pod 从 Service 的 Endpoints 移除，不再接收流量
+   5.3 终止流程
+      用户删除Pod，kubectl delete，Pod状态被Api server标记为Terminating
+      优雅终止，kubelet 向容器发送 SIGTERM 信号，允许应用清理资，等待 terminationGracePeriodSeconds（默认 30 秒），超时后强制 SIGKILL 
+      资源清理：命名空间等
+
+5. preStop 和 postStart钩子
+   postStart 在容器启动后运行，用于初始化，检查依赖项是否就绪。
+   preStop 在容器终止前触发，通常结合 terminationGracePeriodSeconds使用，避免强制终止导致的问题。

@@ -1,0 +1,10 @@
+# configmap-literal.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  LOG_LEVEL: "INFO"
+  MAX_CONNECTIONS: "100"
+  FEATURE_FLAGS: "new-ui,experimental-api"

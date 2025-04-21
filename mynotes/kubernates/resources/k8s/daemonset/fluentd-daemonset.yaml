@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: fluentd
+  template:
+    metadata:
+      labels:
+        name: fluentd
+    spec:
+      # 只在带有特定标签的节点上运行
+      nodeSelector:
+        logging: "true"  # 只选择有 logging=true 标签的节点
+      
+      # 允许在 Master 节点运行（可选）
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+        
+      containers:
+      - name: fluentd
+        image: fluentd:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        
+        # 挂载主机日志目录
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: docker-containers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: docker-containers
+        hostPath:
+          path: /var/lib/docker/containers

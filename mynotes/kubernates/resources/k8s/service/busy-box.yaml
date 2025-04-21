@@ -1,0 +1,11 @@
+# busybox-pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busyboxplus
+spec:
+  containers:
+  - name: busyboxplus
+    image: radial/busyboxplus:curl
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/sh", "-c", "sleep 3600"]  # 保持运行 1 小时

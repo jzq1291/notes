@@ -1,0 +1,68 @@
+1. 创建ConfigMap
+   1.1 kubectl create configMap my-test-config --from-file=/path/folder
+   1.2 kubectl create configMap my-test-config --from-file=key1=/path/folder/file1.yaml --from-file=key2=/path/folder/file2.yaml
+   1.3 kubectl create configMap my-test-config --from-file=/path/folder/file1.yaml
+   1.4 kubectl create configMap my-test-config --from-literal=key1=value2 --from-literal=key2=value2
+   kubectl describle cm my-test-config
+   1.5 demo
+   kubectl create configmap app-properties --from-file=application.properties
+   kubectl apply -f configmap-literal.yaml
+
+2. 在Pod/Deployment中使用 ConfigMap
+   2.1 挂载到数据卷中（最常用）
+   containers:
+    - name: myapp-container
+      image: myapp:1.0
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+   volumes:
+    - name: config-volume
+      configMap:
+        name: app-properties
+        items:
+          - key: application.properties
+            path: application.properties
+
+   2.2 一次性注入所有键值作为环境变量
+   containers:
+    - name: myapp-container
+      image: myapp:1.0
+      envFrom:
+        - configMapRef:
+            name: app-config
+   
+   2.3 单个注入作为环境变量
+     containers:
+    - name: myapp-container
+      image: myapp:1.0
+      env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: LOG_LEVEL
+
+3. 使用Subpath
+   3.1 当挂载configMap到数据卷时, 默认行为会清空mountPath里面所有内容（其实是原来的内容都会被隐藏，Pod停止后又会出现）
+      volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+   3.2 为解决这一问题，使用subPath只挂载单个文件
+      volumeMounts:
+         - name: config-volume
+           mountPath: /etc/config/application.properties  # 不破坏目录结构
+           subPath: application.properties
+
+4. ConfigMap配置的热更新
+   4.1 通常我们把configMap挂载到Pod, 修改ConfigMap会自动更新到pod吗？
+       不使用subPath会自动更新,使用subPath不会自动更新
+   4.2 通过环境变量注入configMap会自动更新吗？
+       不会，需要重启Pod
+   4.3 Secret和ConfigMap一样
+
+5. 不可变的ConfigMap和Secret
+   5.1 目的：有些重要文件希望上线之后就不能改
+   5.2 实现：在configmap中添加 immutable: true
+
+

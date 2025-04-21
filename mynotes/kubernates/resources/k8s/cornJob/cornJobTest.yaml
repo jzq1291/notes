@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-cronjob-minute
+spec:
+  schedule: "* * * * *"   # 每分钟执行一次
+  concurrencyPolicy: Forbid  # 禁止并发执行
+  successfulJobsHistoryLimit: 3 #保留成功的记录（每运行一次就会多一个Pod，最多保留三个）
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello-container
+            image: radial/busyboxplus:curl
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/sh", "-c"]
+            args: ["date; echo 'This job runs every minute!'"]
+          restartPolicy: OnFailure

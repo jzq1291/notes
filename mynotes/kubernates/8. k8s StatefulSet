@@ -1,6 +1,6 @@
 1. 直接创建StatefulSet（不推荐）
 kubectl create statefulset redis --image=redis:latest --service=redis --replicas=3
-在 Kubernetes v1.18+ 版本中，不支持命令创建statefulset,只能 appl yaml.
+在 Kubernetes v1.18+ 版本中，不支持命令创建statefulset,只能apply yaml.
 
 2. 无头Service
   2.1  不分配ClusterIp，而是为每个Pod创建独立的DNS记录

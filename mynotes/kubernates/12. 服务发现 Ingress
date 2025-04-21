@@ -1,0 +1,41 @@
+1. 概念
+ Ingress 负责外部访问和高级路由，Ingress是抽象概念，需要配合Ingress控制器(Nginx一起使用)
+
+2. 使用helm安装 nginx-ingress
+   2.1 安装helm(包管理工具，类似maven)
+        wget https://get.helm.sh/helm-v3.14.0-linux-amd64.tar.gz
+        tar -zxvf helm-v3.14.0-linux-amd64.tar.gz
+        sudo mv linux-amd64/helm /usr/local/bin/helm
+        sudo mv linux-amd64/helm /usr/local/bin/helm
+        chmod +x /usr/local/bin/helm
+        helm version 
+    2.2 使用 Helm 安装 Nginx Ingress Controller
+        添加helm 仓库
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm repo update
+    2.3 安装Nginx Ingress
+kubectl create namespace ingress-nginx
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --set controller.image.repository=registry.cn-hangzhou.aliyuncs.com/google_containers/nginx-ingress-controller \
+  --set controller.image.tag=v1.9.0 
+     
+     2.4 检查ingress-nginx-controller 状态
+     helm list -n ingress-nginx
+     kubectl get deployment,service,pod -n ingress-nginx
+
+3. 使用Ingress
+    3.1 部署一个Nginx和Tomcat用于测试
+    kubectl apply -f demo-app-combined.yaml 
+    kubectl apply -f tomcat-deployment-service.yaml
+    3.3 创建Ingress
+    kubectl apply -f ingress.yaml
+    kubectl get pods,service,ingress
+
+4. 测试Ingress 路由
+    禁用代理
+    unset http_proxy https_proxy no_proxy
+    测试Ingress路由
+    curl -H "Host: example.local" http://localhost:30002/demo
+    curl -H "Host: example.local" http://localhost:30002/tomcat
+    或浏览器直接访问 http://localhost:30002/tomcat

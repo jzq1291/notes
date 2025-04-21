@@ -1,0 +1,25 @@
+# service-ifconfig.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ifconfigme-service-ext
+spec:
+  ports:
+    - name: http
+      port: 80          # 集群内访问的端口
+      targetPort: 80    # ifconfig.io 的 HTTPS 端口
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: ifconfigme-service-ext   # 必须与 Service 同名
+subsets:
+  - addresses:
+      - ip: 104.21.92.106       # ifconfig.io 的 IP
+      - ip: 172.67.191.233      # 另一个 IP
+    ports:
+      - name: http
+        port: 80
+        protocol: TCP

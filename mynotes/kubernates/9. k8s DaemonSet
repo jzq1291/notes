@@ -1,4 +1,13 @@
 1. 概念：
    为每一个匹配（nodeSelector）的Node创建一个守护进程，比如日志收集，系统监控（普罗米修斯）
+   不支持扩容，每个节点最多一个
 2. 创建一个日志收集的daemonset
    fluentd
+3. 通过nodeSelector和node上面的label,选择哪些节点需要这个守护进程，默认所有节点都会有
+   3.1 为node添加 label
+   kubectl label nodes my-cluster-control-plane logging=true
+   3.2 查看label
+   kubectl get nodes --show-labels
+
+4. 查看fluentd日志
+   kubectl logs -n kube-system fluentd-747zt -f

@@ -25,3 +25,11 @@ free -h
  ## vi中查找字符串
  /XXX
  Enter
+
+ # 查看端口占用
+ sudo netstat -tulnp | grep 8080
+ sudo ss -tulnp | grep 8080
+
+# 安装软件
+sudo apt update
+sudo apt install xxx

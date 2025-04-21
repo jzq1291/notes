@@ -1,0 +1,14 @@
+1. Corn 表达式
+   五个星分别代表分，时，日，月，周
+   schedule: "* * * * *"    每分钟运行一次
+             "*/5 * * * *"  ​每5分钟执行一次
+             "0 * * * *"	​每小时整点(0分)执行  
+2. 创建cronJob
+   kubectl apply -f cronJobTest.yaml
+3. 查看cronJob
+   kubectl get CronJob
+4. 查看cronJob输出
+   cronJob每运行一次,就会生成一个Pod,所以可以查看Pod的log
+   kubectl logs pod..
+5. 删除cronJob以及关联的Pod
+   kubectl delete CronJob hello-cronjob-minute --cascade=background

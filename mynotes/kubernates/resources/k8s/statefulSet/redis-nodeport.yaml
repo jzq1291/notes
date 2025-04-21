@@ -1,0 +1,13 @@
+# redis-nodeport.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 6379       # Service 端口
+    targetPort: 6379  # 容器端口
+    nodePort: 30001   # 宿主机端口（必须在 Kind 的 extraPortMappings 范围内）
+  selector:
+    app: redis

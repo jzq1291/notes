@@ -1,0 +1,27 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.27.16  # 指定 Kubernetes 版本
+    extraPortMappings:
+      - containerPort: 80        # Kubernetes 服务的端口
+        hostPort: 8080          # 映射到宿主机的端口
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 8443
+        protocol: TCP
+      - containerPort: 30000
+        hostPort: 30000
+        protocol: TCP
+      - containerPort: 30001
+        hostPort: 30001
+        protocol: TCP
+      - containerPort: 30002
+        hostPort: 30002
+        protocol: TCP 
+      - containerPort: 30003
+        hostPort: 30003
+        protocol: TCP 
+      - containerPort: 30004
+        hostPort: 30004
+        protocol: TCP 

@@ -34,7 +34,7 @@
          a1. 集群内部网络通信，node和node， Pod和Pod，微服务和微服务，东西流量
          a2. 分类：
              ClusterIP(默认类型),只能集群内部访问
-             NodePort：开放一个静态端口，适用集群外部访问
+             NodePort：开放一个静态端口，适用集群外部访问（生产环境不推荐用，应该用ingress暴露）
              Loadbalancer: 在AWS上创建外部负载均衡器，将流量分发到service
              ExternalName：将service映射到一个外部域名，适用与集群内部服务与外部集成
          a3. 通信协议：TCP,UDP
@@ -49,7 +49,8 @@
     2.3.3 存储
        A. VOLUME:共享Pod中容器使用的数据，有状态服务使用
        B. CSI 
-    2.3.4 特殊内省配置
+       C. PV/PVC
+    2.3.4 特殊类型配置
        A. ConfigMap: key-value，灵活的配置文件
        B. Secret: 加密配置
        C. DownwardAPI: 将Pod的信息暴露到容器中

@@ -1,0 +1,32 @@
+1. HostPath
+   1.1 将节点上的文件挂载到Pod中，实现主机和Pod数据共享，类似docker volume
+   1.2 注意，如果是本地Kind环境，那么这个宿主机指的是Docker容器
+   1.3 demo
+   kubectl apply -f volumes_hostPath.yaml
+   进入k8s容器
+   kubectl exec -it hostpath-demo -- sh
+   cd /usr/share/nginx/data
+   touch test.txt
+   进入宿主机
+   docker ps
+   docker exec -it 4a1a997e1e4f /bin/bash
+   cd /home/zhiqiang/k8s/volumes/data
+   检查 test.txt
+   touch testHost.txt
+   重新进入k8s容器
+   kubectl exec -it hostpath-demo -- sh
+   检查 testHost.txt
+   
+
+2. EmptyDir
+   2.1 为了一个Pod中多个容器共享数据，不用做数据持久化，因为Pod删除后EmptyDir也会删除
+   2.2 实现方式：同一个volume 同时映射到两个容器的volumeMounts
+   2.3 demo
+   kubectl apply -f volumes_emptyDir.yaml
+   kubectl exec -it shared-data-demo -c redistestvolumes -- sh
+   修改shared-data/test.txt
+   kubectl exec -it shared-data-demo -c busyboxtestvolumes -- sh 
+   cat test.txt
+
+
+   

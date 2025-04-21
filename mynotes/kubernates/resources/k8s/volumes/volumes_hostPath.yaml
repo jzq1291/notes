@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+    - name: hostpath-volume
+      mountPath: /usr/share/nginx/data
+    ports:
+    - containerPort: 80
+  volumes:
+  - name: hostpath-volume
+    hostPath:
+      path: /home/zhiqiang/k8s/volumes/data  # 宿主机目录
+      type: DirectoryOrCreate

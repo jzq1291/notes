@@ -2,9 +2,6 @@ kubectl get pod
 kubectl delete pod
 kubectl describle pod
 kubectl edit pod
-kubectl get pod --show-labels
-kubectl get pods -A -l app=tomcat
--l 是kubectl命令的选择器参数，用于按标签过滤资源
 
 1. 通过yaml直接创建Pod
    kubectl create -f xx-pod.yaml

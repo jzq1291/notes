@@ -1,0 +1,14 @@
+1. 概念：
+HPA是 Kubernetes 中用于自动水平扩缩 Pod 副本数的控制器，
+根据实时指标（如 CPU、内存或自定义指标）动态调整应用容量，以应对流量波动并优化资源利用率
+
+2. 安装metrics-server
+   2.1 下载 https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+   2.2 修改image仓库地址
+       image: registry.aliyuncs.com/google_containers/metrics-server:v0.7.2
+   2.3 跳过TLS证书验证
+          - --kubelet-insecure-tls
+   2.4 kubectl apply -f components.yaml
+
+3. 查看各个POD资源占用
+   kubectl top pods -A 

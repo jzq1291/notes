@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  annotations:
+    # 精确路径重写（禁用正则简化匹配）
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # 禁用HTTPS重定向
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: example.local
+    http:
+      paths:
+        # 规则1: 精确匹配 /tomcat
+        - path: /tomcat
+          pathType: Exact  # 改为精确匹配
+          backend:
+            service:
+              name: mytomcat
+              port:
+                number: 8080
+
+        # 规则2: 前缀匹配 /demo
+        - path: /demo
+          pathType: Prefix
+          backend:
+            service:
+              name: demo-app
+              port:
+                number: 80
+
+        # 规则3: 默认路径
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: demo-app
+              port:
+                number: 80

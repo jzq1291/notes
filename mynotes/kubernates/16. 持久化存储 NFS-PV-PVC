@@ -1,0 +1,25 @@
+1. NFS网络文件系统，NFS服务器(nfs-kernel-server)可以实现多个node的文件共享
+2. 可以直接k8s的nfs卷能将NFS服务器的文件挂载到Pod中
+     volumes:
+      - name: nfs-volume
+        nfs:
+           server: 192.168.1.100  # NFS 服务器地址
+           path: /data/nfs_share  # NFS 共享路径
+           readOnly: false        # 可读写
+3. PV/PVC 
+   3.1 生产环境建议使用 ​PV/PVC 挂载nfs而非直接挂载，便于管理和复用
+   3.2 PV: PV是Kubernetes 集群中的持久化存储资源，可以对接nfs,磁盘，云存储
+   3.3 PVC：用户对存储资源的请求，通过匹配 PV 为 Pod 提供持久化存储，无需关心底层是什么
+   两者共同实现存储与Pod的解耦
+   3.4 理解PV，PVC，和Pod:
+   NFS/本地磁盘是生产者，PV是代理商，生产者, 
+   PVC是代购，PVC向PV申请资源，比如申领1G持久卷，Pod是消费者，通过绑定PVC得到资源
+
+4. StorageClass(存储类)
+   通过制备器动态制备PV
+    Pod->>PVC: 引用存储请求
+    PVC->>StorageClass: 匹配指定的存储类
+    StorageClass->>CSI: 调用关联的 CSI Driver
+    CSI->>StorageSystem: 创建实际存储资源（如云盘）
+    CSI->>PVC: 自动生成 PV 并绑定
+    PVC->>Pod: 挂载存储卷

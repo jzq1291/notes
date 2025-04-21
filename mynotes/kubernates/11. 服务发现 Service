@@ -1,0 +1,35 @@
+1. 负责集群内部网络通信（node和node,pod和pod）的东西流量
+
+2. service 和 Endpoints
+   kubectl get service
+   kubectl get endpoints
+
+3. service 管理 pod, 访问内部服务
+   service select app=XXX  <-mapping->  Pod app=XXX
+   如果service配置了selector，创建service时会自动创建一对一的endpoint,
+    service通过 endpoints 管理 pod，实现pod间互相访问
+   node1(pod1) -> service -> endpoint -> node2(pod2)
+
+4. Service代理k8s外部服务
+   4.1 使用场景：从外部迁移到k8s之后，有一部分不能迁移，仍然需要访问原来的云服务器
+   external-service.yaml
+   
+5. 通过外部域名访问（反向代理外部域名）
+   Service type 修改为 ExternalName, 不需要endpoints
+   5.1 external-service-domain.yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+      name: ifconfigio-domain-service
+   spec:
+      type: ExternalName
+      externalName: ifconfig.io
+      ports:
+         -name: http
+         port: 80
+         protocol: TCP
+   
+   5.2 测试service
+   kubectl exec -it busyboxplus --sh
+   curl -H "Host: ifconfig.io" http://ifconfigio-domain-service
+   需要加上Host(大部分网站会检查HTTP请求的Host头，确保请求指向正确的域名，后续可以使用Ingress显示设置Host头)

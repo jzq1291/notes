@@ -1,0 +1,38 @@
+1. 污点：操作对象为Node，如果一个Node有污点，会让Pod无法部署到这个Node上
+添加污点，NoSchedule = 禁止调度，不影响现有Pod，NoExcute=禁止调度，并且驱逐现有Pod(无法容忍的Pod)
+kubectl taint nodes node1 gpu=true:NoSchedule
+查看污点
+kubectl describe nodes node1
+删除污点
+kubectl taine nodes node1 gpu:NoSchedule-
+k8s默认污点
+not-ready
+unreachable
+memory-pressure 内存压力
+disk-pressure 磁盘压力
+......
+
+
+2. 容忍：操作对象为Pod
+某些个Pod可以容忍某个污点，就可以正常部署到这个Node
+存在key-critical
+tolerations:
+- key: "critical"
+  operator: "Exists"
+  effect: "NoSchedule"  
+
+存在key并且值为true
+tolerations:
+- key: "gpu"
+  operator: "Equal"
+  value: "true"
+  effect: "NoExecute"   #匹配污点的effect
+
+tolerations:
+- operator: "Exists"  # 容忍所有污点(慎用)
+
+延迟驱逐：
+effect: "NoExecute" 
+tolerationSeconds: 60  # 污点生效60秒后驱逐Pod，仅针对NoExecute污点
+
+

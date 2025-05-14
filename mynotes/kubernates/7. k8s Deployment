@@ -1,3 +1,5 @@
+0. Deployment 通过 ReplicaSet管理Pod
+
 1. 通过命令直接创建deployment
    kubectl create deployment tomcat --image=zhiqiang/mytomcat:1.3
 2. 通过yaml文件创建

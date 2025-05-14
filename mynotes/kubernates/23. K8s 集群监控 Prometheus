@@ -1,0 +1,6 @@
+1. kube-prometheus
+   打包了普罗米修斯需要的所有组件，可以快速使用
+
+2. Grafana
+   2.1 更方便的图形界面(Dashboard)
+   2.2 需要添加prometheus数据源

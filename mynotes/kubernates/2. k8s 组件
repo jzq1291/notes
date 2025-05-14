@@ -4,11 +4,13 @@ Master节点
 3. cloud-controller-manager
 4. kube-scheduler: 将pod分配到合适的node
 5. etcd: K8s的数据库
+
 Node节点
 6. kubelet: 与master节点通信，负责Pod的生命周期
 7. kube-proxy: 负责网络代理，服务发现，负载均衡
 8. container-runtime: Docker
 9. Pod
+
 附加组件
 10. kube-dns
 11. ingress Controller: 外部访问

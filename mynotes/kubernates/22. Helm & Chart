@@ -1,0 +1,42 @@
+1. Helm
+   Helm 用于管理chart(类似于Docker image, 安装包)
+   Helm version
+   1.1 仓库管理
+   helm repo add bitnami https://charts.bitnami.com/bitnami
+   helm repo update
+   helm repo list
+   1.2 chart 管理
+   helm install my-release ./chart
+   helm uninstall my-release
+   helm list -n <namespace>
+   helm status my-release
+   helm install my-nginx bitnami/nginx   # 安装远程chart
+
+2. Chart: ​一个 Helm Chart 可以包含多种 Kubernetes资源,并将它们编排成一个完整的应用
+   my-app-chart/
+    ├── Chart.yaml          # 元信息
+    ├── values.yaml         # 默认配置
+    └── templates/          # 资源模板
+        ├── deployment.yaml # 无状态应用
+        ├── service.yaml    # 服务暴露
+        ├── statefulset.yaml # 有状态应用（如数据库）
+        ├── ingress.yaml    # 外部访问路由
+        ├── configmap.yaml  # 配置文件
+        └── pvc.yaml        # 持久化存储声明
+
+   helm install my-release ./my-app-chart   # 安装chart 
+   helm get manifest ingress-nginx -n ingress-nginx  # 查看chart 编排的内容
+
+3. Release 
+   Chart instll 之后为一个release
+
+4. chart升级和回滚
+   4.1 升级
+   helm upgrade my-release ./my-app-chart -n my-namespace 
+   4.2 查看历史版本
+   helm history my-release -n my-namespace 
+   4.3 回滚
+   helm rollback my-release xxx -my-namespace
+   4.4 卸载
+   helm uninstall my-release -n my-release
+   helm delete my-release -n my-release

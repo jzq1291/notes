@@ -1,0 +1,15 @@
+1. install ollama
+   https://ollama.com/search
+   ollama --version
+2. 拉取模型
+   ollama pull deepseek-r1:1.5b
+   ollama pull deepseek-r1:7b
+3. 查看模型
+   ollama list
+4. 运行模型
+   ollama run deepseek-r1:1.5b
+5. 查看正在运行的模型
+   ollama ps
+
+6. 大模型API调试:阿里云百炼
+   https://bailian.console.aliyun.com/

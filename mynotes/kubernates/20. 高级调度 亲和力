@@ -1,0 +1,17 @@
+1. 亲和力：约束一个Pod只能在特定节点，或者优先在特定节点
+
+2. 使用
+    2.1 节点亲和力，通过node信息(label)找到对应的Node
+    nodeAffinity
+       requriedXXXXX
+       preferredXXXX
+        - weight : 1  #权重
+       preferredXXXX
+        - weight ：20 
+
+    2.2 Pod亲和力，通过其他Pod的信息，把当前Pod部署到和特定Pod同一个Node
+    podAffinity
+       requriedXXXXX
+       preferredXXXX
+    
+    2.3 Pod反亲和力，Pod亲和力，通过其他Pod的信息，把当前Pod部署到和特定Pod不同的Node
